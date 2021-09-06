@@ -12,7 +12,7 @@ current_version = "1.1.0"
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-new_game", "--new_game", help="New Game Flag", type=bool)
-parser.add_argument("-calibrate", "--calibrate", help="Calibrate", type=bool)
+parser.add_argument("-calibrate", "--calibrate", help="main", type=bool)
 parser.add_argument("-ac_only", "--ac_only", help="AutoClicker Only Flag", type=bool)
 parser.add_argument("-gc", "--gc", help="Golden Cookie", type=bool)
 
@@ -48,7 +48,7 @@ config.read("./config.ini")
 if calibrate:
   print("Calibration Required")
 
-main_cookie_pos = eval(config["calibrate"]["main_cookie_pos"])
+main_cookie_pos = eval(config["main"]["main_cookie_pos"])
 if calibrate:
   main_cookie_pos = None
   main_cookie_input = input("Hover Mouse over Main Cookie and Press Any Key or Press Enter to auto-find: ")
@@ -62,16 +62,16 @@ if calibrate:
   if main_cookie_pos is None:
     main_cookie_pos = captureCursorPos("Main Cookie")
 
-  config["calibrate"]["main_cookie_pos"] = str([main_cookie_pos[0], main_cookie_pos[1]])
+  config["main"]["main_cookie_pos"] = str([main_cookie_pos[0], main_cookie_pos[1]])
 print("Main Cookie Pos", main_cookie_pos)
 
-config_delay = config.getint("calibrate", "buy_delay")
+config_delay = config.getint("main", "buy_delay")
 if not new_game:
   if calibrate:
     config_delay = input("Enter buy delay (press Enter for default): ")
     if config_delay and config_delay.isdigit() and int(config_delay) > 0:
       config_delay = int(config_delay)
-      config["calibrate"]["buy_delay"] = str(config_delay)
+      config["main"]["buy_delay"] = str(config_delay)
     else:
       if config_delay == "":
         print("Using default buy delay")
@@ -79,18 +79,18 @@ if not new_game:
         print("Invalid input; defaulting Buy Delay")
       config_delay = 100
 
-add_delay = config.getboolean("calibrate", "add_delay")
+add_delay = config.getboolean("main", "add_delay")
 delay_amount = 1
 
 buy_delay = config_delay if not new_game else 15
 current_delay = 0
 
-click_speed = config.getfloat("calibrate", "click_speed")
+click_speed = config.getfloat("main", "click_speed")
 if calibrate:
   click_speed = input("Enter a Click Speed (press Enter for default): ")
   if click_speed and click_speed.isdigit() and float(click_speed) > 0:
     click_speed = float(click_speed)
-    config["calibrate"]["click_speed"] = str(click_speed)
+    config["main"]["click_speed"] = str(click_speed)
   else:
     if click_speed == "":
       print("Using default click speed")
@@ -160,7 +160,7 @@ if buy_buildings:
 
 if calibrate:
   print("Calibration Complete")
-  config["calibrate"]["need"] = "False"
+  config["main"]["need"] = "False"
   with open("./config.ini", "w") as configfile:
     config.write(configfile)
 

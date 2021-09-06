@@ -90,10 +90,11 @@ After running the script, there are several methods to engage the automation.
 
 [(Back to top)](#table-of-contents)
 
-1. Move Config to script flag
+1. ~~Move Config to script flag~~
 2. Improve image detection algorithm
 3. Add support for more building types
 4. ~~Add Progress Bars for clicking to upgrade/building count~~
+5. Migrate to GUI
 
 <!-- Man pages have been added. Checkout `man colorls`. -->
 
