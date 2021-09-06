@@ -46,6 +46,7 @@ A Python script that automates the process of playing Cookie Clicker.
 - [Packages](#packages)
 - [Usage](#usage)
 - [To Do's](#todo's)
+- [Changelog](#changelog)
 - [License](#license)
 
 # Packages
@@ -80,6 +81,10 @@ After running the script, there are several methods to engage the automation.
 
 - `h` : Stop hunting for Golden Cookies.
 
+- `c` : Start the Auto Clicker Only mode.
+
+- `x` : Stop the Auto Clicker Only mode.
+
 # To Do's
 
 [(Back to top)](#table-of-contents)
@@ -87,7 +92,7 @@ After running the script, there are several methods to engage the automation.
 1. Move Config to script flag
 2. Improve image detection algorithm
 3. Add support for more building types
-4. Add Progress Bars for clicking to upgrade/building count
+4. ~~Add Progress Bars for clicking to upgrade/building count~~
 
 <!-- Man pages have been added. Checkout `man colorls`. -->
 
@@ -277,11 +282,17 @@ gem uninstall colorls
 
 Your contributions are always welcome! Please have a look at the [contribution guidelines](CONTRIBUTING.md) first. :tada: -->
 
+# Changelog
+
+[(Back to top)](#table-of-contents)
+
+See the [changelog](CHANGELOG.md) for a list of changes.
+
 # License
 
 [(Back to top)](#table-of-contents)
 
 
-The MIT License (MIT) 2017 - [Scott Ha](https://github.com/Scott-N-Ha/). Please have a look at the [LICENSE.md](LICENSE.md) for more details.
+The MIT License (MIT) 2021 - [Scott Ha](https://github.com/Scott-N-Ha/). Please have a look at the [LICENSE](LICENSE) for more details.
 
 _README template built by [Athitya Kumar](https://github.com/athityakumar)_
