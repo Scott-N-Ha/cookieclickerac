@@ -1,7 +1,6 @@
-import pyautogui as pt
+import pyautogui as pg
 import keyboard as kb
 import cv2
-import pyautogui as pg
 import configparser as cp
 from time import sleep
 
@@ -14,9 +13,9 @@ def captureCursorPos(item):
     print("Capturing Mouse Position in", countdown, "seconds")
     sleep(1)
     countdown -= 1
-  return pt.position()
+  return pg.position()
 
-pt.FAILSAFE = True
+pg.FAILSAFE = True
 
 click = False
 
@@ -60,7 +59,7 @@ if calibrate:
   else:
     print("Invalid Input; defaulting Click Speed")
     click_speed = 0.01
-pt.PAUSE = click_speed
+pg.PAUSE = click_speed
 
 buy_upgrades = config.getboolean("upgrades", "buy_upgrades")
 buy_upgrades_pos = None
@@ -171,7 +170,7 @@ while True:
   if click:
     if goldenCookies:
       moveMouseToMainCookie()
-    pt.click()
+    pg.click()
     current_delay += 1
 
     if current_delay >= buy_delay:
