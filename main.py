@@ -205,7 +205,7 @@ while True:
 
         current_delay = 0
         if add_delay:
-          if buy_delay > (delay_amount * 10):
+          if buy_delay > (delay_amount * delay_amount):
             delay_amount = delay_amount * 10
           buy_delay += delay_amount
 
