@@ -22,6 +22,8 @@ click = False
 
 goldenCookies = False
 
+new_game = True if input("New Game? (y/n)") == "y" else False
+
 main_img = cv2.imread("./images/main_cookie.png", cv2.IMREAD_UNCHANGED)
 print("Looking for Main Cookie")
 main_cookie_pos = pg.locateCenterOnScreen("./images/main_cookie.png")
@@ -39,16 +41,20 @@ if calibrate:
   print("Calibration Required")
 
 config_delay = config.getint("calibrate", "buy_delay")
-if calibrate:
-  config_delay = input("Enter buy delay:")
-  if config_delay and config_delay.isdigit() and int(config_delay) > 0:
-    config_delay = int(config_delay)
-    config["calibrate"]["buy_delay"] = str(config_delay)
-  else:
-    print("Invalid input; defaulting Buy Delay")
-    config_delay = 10000
-  
-buy_delay = config_delay
+if not new_game:
+  if calibrate:
+    config_delay = input("Enter buy delay:")
+    if config_delay and config_delay.isdigit() and int(config_delay) > 0:
+      config_delay = int(config_delay)
+      config["calibrate"]["buy_delay"] = str(config_delay)
+    else:
+      print("Invalid input; defaulting Buy Delay")
+      config_delay = 10000
+
+add_delay = config.getboolean("calibrate", "add_delay")
+delay_amount = 1
+
+buy_delay = config_delay if not new_game else 15
 current_delay = 0
 
 click_speed = config.getfloat("calibrate", "click_speed")
@@ -187,17 +193,20 @@ while True:
 
       if current_delay >= buy_delay:
         if buy_upgrades:
-          print("Buying Upgrades")
           pg.moveTo(buy_upgrades_pos[0], buy_upgrades_pos[1])
           pg.click()
           moveMouseToMainCookie()
 
         if buy_buildings:
-          print("Buying Buildings")
           for pos in buy_buildings_pos:
             pg.moveTo(pos[0], pos[1])
             pg.click()
           moveMouseToMainCookie()
 
         current_delay = 0
-        pbar.update()
+        if add_delay:
+          if buy_delay > (delay_amount * 10):
+            delay_amount = delay_amount * 10
+          buy_delay += delay_amount
+
+        pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='click')
