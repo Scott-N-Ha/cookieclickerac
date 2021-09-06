@@ -45,9 +45,10 @@ A Python script that automates the process of playing Cookie Clicker.
 
 - [Packages](#packages)
 - [Usage](#usage)
-- [To Do's](#todo's)
+- [Future](#future)
 - [Changelog](#changelog)
 - [License](#license)
+- [External Links](#external-links)
 
 # Packages
 
@@ -85,7 +86,7 @@ After running the script, there are several methods to engage the automation.
 
 - `x` : Stop the Auto Clicker Only mode.
 
-# To Do's
+# Future
 
 [(Back to top)](#table-of-contents)
 
@@ -295,4 +296,15 @@ See the [changelog](CHANGELOG.md) for a list of changes.
 
 The MIT License (MIT) 2021 - [Scott Ha](https://github.com/Scott-N-Ha/). Please have a look at the [LICENSE](LICENSE) for more details.
 
-_README template built by [Athitya Kumar](https://github.com/athityakumar)_
+<!-- _FontAwesome Icons are licensed under the [Creative Commons Attribution 4.0 International license](https://fontawesome.com/license)._ -->
+
+_README template built by [Athitya Kumar](https://github.com/athityakumar)._
+
+# External Links
+
+[(Back to top)](#table-of-contents)
+
+- [GitHub](https://github.com/Scott-N-Ha)
+- [LinkedIn](https://www.linkedin.com/in/scottnha/)
+- [Donate](https://paypal.me/scottnha)
+- [Random Link](https://youtu.be/dlKgZdOFD50?t=7)

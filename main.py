@@ -5,6 +5,17 @@ import configparser as cp
 from time import sleep
 import enlighten
 import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-new_game", "--new_game", help="New Game Flag", type=bool)
+parser.add_argument("-calibrate", "--calibrate", help="Calibrate", type=bool)
+
+args = parser.parse_args()
+
+new_game = True if args.new_game else False
+calibrate = True if args.calibrate else False
 
 print("Good luck")
 
@@ -25,7 +36,7 @@ click_only_pbar = None
 
 goldenCookies = False
 
-new_game = input("New Game? (y/n)") == "y"
+# new_game = input("New Game? (y/n)") == "y"
 print("New Game: ", new_game)
 
 main_img = cv2.imread("./images/main_cookie.png", cv2.IMREAD_UNCHANGED)
@@ -34,7 +45,7 @@ golden_img = cv2.imread("./images/golden_cookie.png", cv2.IMREAD_UNCHANGED)
 config = cp.ConfigParser(allow_no_value=True)
 config.read("./config.ini")
 
-calibrate = config.getboolean("calibrate", "need")
+# calibrate = config.getboolean("calibrate", "need")
 print("Calibrate", calibrate)
 
 if calibrate:
