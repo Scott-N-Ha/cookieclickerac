@@ -62,6 +62,8 @@ A Python script that automates the process of playing Cookie Clicker.
 
 - `configparser` : A Python module that provides an interface to read and write configuration files.
 
+- `enlighten` : A Python module that provides a Python interface to the Enlighten library for progress bars.
+
 # Usage
 
 [(Back to top)](#table-of-contents)

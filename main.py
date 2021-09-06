@@ -3,6 +3,7 @@ import keyboard as kb
 import cv2
 import configparser as cp
 from time import sleep
+import enlighten
 
 print("Good luck")
 
@@ -137,6 +138,9 @@ if calibrate:
 def moveMouseToMainCookie():
   pg.moveTo(main_cookie_pos[0], main_cookie_pos[1])
 
+track_clicks = buy_upgrades and buy_buildings
+pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='click')
+
 print("Cookie Clicker AC v0.1")
 while True:
   if kb.is_pressed("k"):
@@ -171,20 +175,23 @@ while True:
     if goldenCookies:
       moveMouseToMainCookie()
     pg.click()
-    current_delay += 1
+    if track_clicks:
+      current_delay += 1
+      pbar.update()
 
-    if current_delay >= buy_delay:
-      if buy_upgrades:
-        print("Buying Upgrades")
-        pg.moveTo(buy_upgrades_pos[0], buy_upgrades_pos[1])
-        pg.click()
-        moveMouseToMainCookie()
-
-      if buy_buildings:
-        print("Buying Buildings")
-        for pos in buy_buildings_pos:
-          pg.moveTo(pos[0], pos[1])
+      if current_delay >= buy_delay:
+        if buy_upgrades:
+          print("Buying Upgrades")
+          pg.moveTo(buy_upgrades_pos[0], buy_upgrades_pos[1])
           pg.click()
-        moveMouseToMainCookie()
+          moveMouseToMainCookie()
 
-      current_delay = 0
+        if buy_buildings:
+          print("Buying Buildings")
+          for pos in buy_buildings_pos:
+            pg.moveTo(pos[0], pos[1])
+            pg.click()
+          moveMouseToMainCookie()
+
+        current_delay = 0
+        pbar.update()
