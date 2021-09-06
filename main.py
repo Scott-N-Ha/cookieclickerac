@@ -13,6 +13,8 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-new_game", "--new_game", help="New Game Flag", type=bool)
 parser.add_argument("-calibrate", "--calibrate", help="Calibrate", type=bool)
+parser.add_argument("-ac_only", "--ac_only", help="AutoClicker Only Flag", type=bool)
+parser.add_argument("-gc", "--gc", help="Golden Cookie", type=bool)
 
 args = parser.parse_args()
 
@@ -38,6 +40,7 @@ goldenCookies = False
 
 main_img = cv2.imread("./images/main_cookie.png", cv2.IMREAD_UNCHANGED)
 golden_img = cv2.imread("./images/golden_cookie.png", cv2.IMREAD_UNCHANGED)
+golden_img_2 = cv2.imread("./images/golden_cookie_2.png", cv2.IMREAD_UNCHANGED)
 
 config = cp.ConfigParser(allow_no_value=True)
 config.read("./config.ini")
@@ -94,6 +97,7 @@ if calibrate:
     else:
       print("Invalid input; defaulting Click Speed")
     click_speed = 0.015
+print("Click Speed ", click_speed)
 pg.PAUSE = click_speed
 
 buy_upgrades = config.getboolean("upgrades", "buy_upgrades")
@@ -173,59 +177,56 @@ while True:
   if kb.is_pressed("k"):
     print("Kill Program")
     break
-
-  if kb.is_pressed("s") and last_keydown != "s":
+  elif kb.is_pressed("s") and last_keydown != "s":
     last_keydown = "s"
     print("Pause Clicking")
     click = False
     click_only = False
-
-  if kb.is_pressed("a") and last_keydown != "a":
+  elif kb.is_pressed("a") and last_keydown != "a":
     last_keydown = "a"
     print("Start Clicking")
     moveMouseToMainCookie()
     click = True
     click_only = False
 
-  if kb.is_pressed("g") and last_keydown != "g":
-    last_keydown = "g"
-    print("Hunting Golden Cookies")
-    goldenCookies = True
+  if args.gc:
+    if kb.is_pressed("g") and last_keydown != "g":
+      last_keydown = "g"
+      print("Hunting Golden Cookies")
+      goldenCookies = True
+    elif kb.is_pressed("h") and last_keydown != "h":
+      last_keydown = "h"
+      print("Pause Hunting Golden Cookies")
+      goldenCookies = False
+    
+    if goldenCookies:
+      result = pg.locateCenterOnScreen(golden_img, confidence=0.6)
+      if result is not None:
+        print("Found Golden Cookie", result)
+        pg.moveTo(result[0], result[1])
+        pg.click()
+        moveMouseToMainCookie()
 
-  if kb.is_pressed("h") and last_keydown != "h":
-    last_keydown = "h"
-    print("Pause Hunting Golden Cookies")
-    goldenCookies = False
+  if args.ac_only:
+    if kb.is_pressed("c") and last_keydown != "c":
+      last_keydown = "c"
+      print("Auto Click Only Mode")
+      moveMouseToMainCookie()
+      click_only_pbar = enlighten.Counter(total=sys.maxsize, desc='Clicks', unit='clicks')
+      click_only = True
+      click = False
+    elif kb.is_pressed("x") and last_keydown != "x":
+      last_keydown = "x"
+      print("Exit Auto Click Only Mode")
+      click_only = False
+      click = False
+      click_only_pbar = None
 
-  if kb.is_pressed("c") and last_keydown != "c":
-    last_keydown = "c"
-    print("Auto Click Only Mode")
-    moveMouseToMainCookie()
-    click_only_pbar = enlighten.Counter(total=sys.maxsize, desc='Clicks', unit='clicks')
-    click_only = True
-    click = False
-
-  if kb.is_pressed("x") and last_keydown != "x":
-    last_keydown = "x"
-    print("Exit Auto Click Only Mode")
-    click_only = False
-    click = False
-    click_only_pbar = None
-
-  if goldenCookies:
-    result = pg.locateCenterOnScreen(golden_img, confidence=0.6)
-    if result is not None:
-      print("Found Golden Cookie", result)
-      pg.moveTo(result[0], result[1])
+    if click_only:
       pg.click()
-
-  if click_only:
-    pg.click()
-    click_only_pbar.update()
+      click_only_pbar.update()
 
   if click:
-    if goldenCookies:
-      moveMouseToMainCookie()
     pg.click()
     if track_clicks:
       current_delay += 1
