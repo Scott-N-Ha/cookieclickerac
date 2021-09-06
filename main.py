@@ -7,6 +7,8 @@ import enlighten
 import sys
 import argparse
 
+current_version = "1.1.0"
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-new_game", "--new_game", help="New Game Flag", type=bool)
@@ -16,8 +18,6 @@ args = parser.parse_args()
 
 new_game = True if args.new_game else False
 calibrate = True if args.calibrate else False
-
-print("Good luck")
 
 def captureCursorPos(item):
   countdown = 3
@@ -36,17 +36,11 @@ click_only_pbar = None
 
 goldenCookies = False
 
-# new_game = input("New Game? (y/n)") == "y"
-print("New Game: ", new_game)
-
 main_img = cv2.imread("./images/main_cookie.png", cv2.IMREAD_UNCHANGED)
 golden_img = cv2.imread("./images/golden_cookie.png", cv2.IMREAD_UNCHANGED)
 
 config = cp.ConfigParser(allow_no_value=True)
 config.read("./config.ini")
-
-# calibrate = config.getboolean("calibrate", "need")
-print("Calibrate", calibrate)
 
 if calibrate:
   print("Calibration Required")
@@ -174,7 +168,7 @@ pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='clicks')
 
 last_keydown = None
 
-print("Cookie Clicker AC v0.2")
+print("Cookie Clicker AC v", current_version)
 while True:
   if kb.is_pressed("k"):
     print("Kill Program")
