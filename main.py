@@ -55,7 +55,7 @@ if calibrate:
   if main_cookie_input == "":
     try:
       print("Looking for Main Cookie")
-      main_cookie_pos = pg.locateCenterOnScreen("./images/main_cookie.png")
+      main_cookie_pos = pg.locateCenterOnScreen("./images/main_cookie.png", confidence=0.6)
     except:
       print("Could not find Main Cookie")
 
