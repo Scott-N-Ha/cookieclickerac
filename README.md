@@ -52,7 +52,7 @@ A Python script that automates the process of playing Cookie Clicker.
 
 [(Back to top)](#table-of-contents)
 
-`CookieClickerAC` uses the following packages:
+`CookieClickerAC` was developed using `Python 3.9.5` and the following packages:
 
 - `pyautogui` : A Python module that provides a cross-platform interface to the user input.
 
