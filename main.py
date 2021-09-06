@@ -141,26 +141,32 @@ def moveMouseToMainCookie():
 track_clicks = buy_upgrades and buy_buildings
 pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='click')
 
+last_keydown = None
+
 print("Cookie Clicker AC v0.1")
 while True:
   if kb.is_pressed("k"):
     print("Kill Program")
     break
 
-  if kb.is_pressed("s"):
+  if kb.is_pressed("s") and last_keydown != "s":
+    last_keydown = "s"
     print("Pause Clicking")
     click = False
 
-  if kb.is_pressed("a"):
+  if kb.is_pressed("a") and last_keydown != "a":
+    last_keydown = "a"
     print("Start Clicking")
     moveMouseToMainCookie()
     click = True
 
-  if kb.is_pressed("g"):
+  if kb.is_pressed("g") and last_keydown != "g":
+    last_keydown = "g"
     print("Hunting Golden Cookies")
     goldenCookies = True
 
-  if kb.is_pressed("h"):
+  if kb.is_pressed("h") and last_keydown != "h":
+    last_keydown = "h"
     print("Pause Hunting Golden Cookies")
     goldenCookies = False
 
