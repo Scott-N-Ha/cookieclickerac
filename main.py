@@ -4,6 +4,7 @@ import cv2
 import configparser as cp
 from time import sleep
 import enlighten
+import sys
 
 print("Good luck")
 
@@ -19,6 +20,8 @@ def captureCursorPos(item):
 pg.FAILSAFE = True
 
 click = False
+click_only = False
+click_only_pbar = None
 
 goldenCookies = False
 
@@ -51,7 +54,7 @@ if calibrate:
   if main_cookie_pos is None:
     main_cookie_pos = captureCursorPos("Main Cookie")
 
-  config["calibrate"]["main_cookie_pos"] = str(main_cookie_pos)
+  config["calibrate"]["main_cookie_pos"] = str([main_cookie_pos[0], main_cookie_pos[1]])
 print("Main Cookie Pos", main_cookie_pos)
 
 config_delay = config.getint("calibrate", "buy_delay")
@@ -156,11 +159,11 @@ def moveMouseToMainCookie():
   pg.moveTo(main_cookie_pos[0], main_cookie_pos[1])
 
 track_clicks = buy_upgrades and buy_buildings
-pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='click')
+pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='clicks')
 
 last_keydown = None
 
-print("Cookie Clicker AC v0.1")
+print("Cookie Clicker AC v0.2")
 while True:
   if kb.is_pressed("k"):
     print("Kill Program")
@@ -170,12 +173,14 @@ while True:
     last_keydown = "s"
     print("Pause Clicking")
     click = False
+    click_only = False
 
   if kb.is_pressed("a") and last_keydown != "a":
     last_keydown = "a"
     print("Start Clicking")
     moveMouseToMainCookie()
     click = True
+    click_only = False
 
   if kb.is_pressed("g") and last_keydown != "g":
     last_keydown = "g"
@@ -187,12 +192,31 @@ while True:
     print("Pause Hunting Golden Cookies")
     goldenCookies = False
 
+  if kb.is_pressed("c") and last_keydown != "c":
+    last_keydown = "c"
+    print("Auto Click Only Mode")
+    moveMouseToMainCookie()
+    click_only_pbar = enlighten.Counter(total=sys.maxsize, desc='Clicks', unit='clicks')
+    click_only = True
+    click = False
+
+  if kb.is_pressed("x") and last_keydown != "x":
+    last_keydown = "x"
+    print("Exit Auto Click Only Mode")
+    click_only = False
+    click = False
+    click_only_pbar = None
+
   if goldenCookies:
     result = pg.locateCenterOnScreen(golden_img, confidence=0.6)
     if result is not None:
       print("Found Golden Cookie", result)
       pg.moveTo(result[0], result[1])
       pg.click()
+
+  if click_only:
+    pg.click()
+    click_only_pbar.update()
 
   if click:
     if goldenCookies:
@@ -215,9 +239,11 @@ while True:
           moveMouseToMainCookie()
 
         current_delay = 0
-        if add_delay:
+        if add_delay and buy_delay < sys.maxsize:
           if buy_delay > (delay_amount * delay_amount):
             delay_amount = delay_amount * 10
           buy_delay += delay_amount
+          if buy_delay > sys.maxsize:
+            buy_delay = sys.maxsize
 
-        pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='click')
+        pbar = enlighten.Counter(total=buy_delay, desc='Clicks', unit='clicks')
