@@ -22,13 +22,10 @@ click = False
 
 goldenCookies = False
 
-new_game = True if input("New Game? (y/n)") == "y" else False
+new_game = input("New Game? (y/n)") == "y"
+print("New Game: ", new_game)
 
 main_img = cv2.imread("./images/main_cookie.png", cv2.IMREAD_UNCHANGED)
-print("Looking for Main Cookie")
-main_cookie_pos = pg.locateCenterOnScreen("./images/main_cookie.png")
-print("Found Main Cookie", main_cookie_pos)
-
 golden_img = cv2.imread("./images/golden_cookie.png", cv2.IMREAD_UNCHANGED)
 
 config = cp.ConfigParser(allow_no_value=True)
@@ -40,16 +37,36 @@ print("Calibrate", calibrate)
 if calibrate:
   print("Calibration Required")
 
+main_cookie_pos = eval(config["calibrate"]["main_cookie_pos"])
+if calibrate:
+  main_cookie_pos = None
+  main_cookie_input = input("Hover Mouse over Main Cookie and Press Any Key or Press Enter to auto-find: ")
+  if main_cookie_input == "":
+    try:
+      print("Looking for Main Cookie")
+      main_cookie_pos = pg.locateCenterOnScreen("./images/main_cookie.png")
+    except:
+      print("Could not find Main Cookie")
+
+  if main_cookie_pos is None:
+    main_cookie_pos = captureCursorPos("Main Cookie")
+
+  config["calibrate"]["main_cookie_pos"] = str(main_cookie_pos)
+print("Main Cookie Pos", main_cookie_pos)
+
 config_delay = config.getint("calibrate", "buy_delay")
 if not new_game:
   if calibrate:
-    config_delay = input("Enter buy delay:")
+    config_delay = input("Enter buy delay (press Enter for default): ")
     if config_delay and config_delay.isdigit() and int(config_delay) > 0:
       config_delay = int(config_delay)
       config["calibrate"]["buy_delay"] = str(config_delay)
     else:
-      print("Invalid input; defaulting Buy Delay")
-      config_delay = 10000
+      if config_delay == "":
+        print("Using default buy delay")
+      else:
+        print("Invalid input; defaulting Buy Delay")
+      config_delay = 100
 
 add_delay = config.getboolean("calibrate", "add_delay")
 delay_amount = 1
@@ -59,16 +76,24 @@ current_delay = 0
 
 click_speed = config.getfloat("calibrate", "click_speed")
 if calibrate:
-  click_speed = input("Enter a Click Speed:")
+  click_speed = input("Enter a Click Speed (press Enter for default): ")
   if click_speed and click_speed.isdigit() and float(click_speed) > 0:
     click_speed = float(click_speed)
     config["calibrate"]["click_speed"] = str(click_speed)
   else:
-    print("Invalid Input; defaulting Click Speed")
-    click_speed = 0.01
+    if click_speed == "":
+      print("Using default click speed")
+    else:
+      print("Invalid input; defaulting Click Speed")
+    click_speed = 0.015
 pg.PAUSE = click_speed
 
 buy_upgrades = config.getboolean("upgrades", "buy_upgrades")
+if calibrate:
+  buy_upgrades = input("Buy Upgrades? (y/n)") == "y"
+  print("Buy Upgrades: ", buy_upgrades)
+  config["upgrades"]["buy_upgrades"] = str(buy_upgrades)
+
 buy_upgrades_pos = None
 
 if buy_upgrades:
@@ -80,60 +105,46 @@ if buy_upgrades:
   print("Upgrade Position", buy_upgrades_pos)
 
 buy_buildings = config.getboolean("buildings", "buy_buildings")
+if calibrate:
+  buy_buildings = input("Buy Buildings? (y/n)") == "y"
+  print("Buy Buildings: ", buy_buildings)
+  config["buildings"]["buy_buildings"] = str(buy_buildings)
+
 buy_buildings_pos = []
+buildings = [
+  "antimatter_condensers",
+  "time_machines",
+  "portals",
+  "alchemy_labs",
+  "shipments",
+  "wizard_towers",
+  "temples",
+  "banks",
+  "factories",
+  "mines",
+  "farms",
+  "grandmas",
+  "cursors",
+]
+
+def calibrateBuildings(building):
+  if config.getboolean("buildings", "buy_" + building):
+    buy_buildings_pos.append(captureCursorPos(building))
+    print(building, "Position", buy_buildings_pos[-1])
+    config["buildings"]["buy_" + building + "_pos"] = str([buy_buildings_pos[-1][0], buy_buildings_pos[-1][1]])
+
+def getBuildingPos(building):
+  if config.getboolean("buildings", "buy_" + building):
+    buy_buildings_pos.append(eval(config["buildings"]["buy_" + building + "_pos"]))
+    print(building, "Position", buy_buildings_pos[-1])
 
 if buy_buildings:
   if calibrate:
-    if config.getboolean("buildings", "buy_temples"):
-      buy_buildings_pos.append(captureCursorPos("Temple"))
-      print("Temple Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_temples_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
-    if config.getboolean("buildings", "buy_banks"):
-      buy_buildings_pos.append(captureCursorPos("Bank"))
-      print("Bank Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_banks_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
-    if config.getboolean("buildings", "buy_factories"):
-      buy_buildings_pos.append(captureCursorPos("Factory"))
-      print("Factory Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_factories_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
-    if config.getboolean("buildings", "buy_mines"):
-      buy_buildings_pos.append(captureCursorPos("Mine"))
-      print("Mine Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_mines_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
-    if config.getboolean("buildings", "buy_farms"):
-      buy_buildings_pos.append(captureCursorPos("Farm"))
-      print("Farm Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_farms_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
-    if config.getboolean("buildings", "buy_grandmas"):
-      buy_buildings_pos.append(captureCursorPos("Grandma"))
-      print("Grandma Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_grandmas_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
-    if config.getboolean("buildings", "buy_cursors"):
-      buy_buildings_pos.append(captureCursorPos("Cursor"))
-      print("Cursor Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-      config["buildings"]["buy_cursors_pos"] = str([buy_buildings_pos[len(buy_buildings_pos) - 1][0], buy_buildings_pos[len(buy_buildings_pos) - 1][1]])
+    for building in buildings:
+      calibrateBuildings(building)
   else:
-    if config.getboolean("buildings", "buy_temples"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_temples_pos"]))
-      print("Temple Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-    if config.getboolean("buildings", "buy_banks"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_banks_pos"]))
-      print("Bank Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-    if config.getboolean("buildings", "buy_factories"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_factories_pos"]))
-      print("Factory Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-    if config.getboolean("buildings", "buy_mines"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_mines_pos"]))
-      print("Mine Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-    if config.getboolean("buildings", "buy_farms"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_farms_pos"]))
-      print("Farm Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-    if config.getboolean("buildings", "buy_grandmas"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_grandmas_pos"]))
-      print("Grandma Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
-    if config.getboolean("buildings", "buy_cursors"):
-      buy_buildings_pos.append(eval(config["buildings"]["buy_cursors_pos"]))
-      print("Cursor Position", buy_buildings_pos[len(buy_buildings_pos) - 1])
+    for building in buildings:
+      getBuildingPos(building)
 
 if calibrate:
   print("Calibration Complete")
