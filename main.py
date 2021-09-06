@@ -63,7 +63,6 @@ if calibrate:
     main_cookie_pos = captureCursorPos("Main Cookie")
 
   config["main"]["main_cookie_pos"] = str([main_cookie_pos[0], main_cookie_pos[1]])
-print("Main Cookie Pos", main_cookie_pos)
 
 config_delay = config.getint("main", "buy_delay")
 if not new_game:
@@ -97,12 +96,11 @@ if calibrate:
     else:
       print("Invalid input; defaulting Click Speed")
     click_speed = 0.015
-print("Click Speed ", click_speed)
 pg.PAUSE = click_speed
 
 buy_upgrades = config.getboolean("upgrades", "buy_upgrades")
 if calibrate:
-  buy_upgrades = input("Buy Upgrades? (y/n)") == "y"
+  buy_upgrades = input("Buy Upgrades? (y/n) ") == "y"
   print("Buy Upgrades: ", buy_upgrades)
   config["upgrades"]["buy_upgrades"] = str(buy_upgrades)
 
@@ -114,7 +112,6 @@ if buy_upgrades:
     config["upgrades"]["buy_upgrades_pos"] = str([buy_upgrades_pos[0], buy_upgrades_pos[1]])
   else:
     buy_upgrades_pos = eval(config["upgrades"]["buy_upgrades_pos"])
-  print("Upgrade Position", buy_upgrades_pos)
 
 buy_buildings = config.getboolean("buildings", "buy_buildings")
 if calibrate:
@@ -148,7 +145,6 @@ def calibrateBuildings(building):
 def getBuildingPos(building):
   if config.getboolean("buildings", "buy_" + building):
     buy_buildings_pos.append(eval(config["buildings"]["buy_" + building + "_pos"]))
-    print(building, "Position", buy_buildings_pos[-1])
 
 if buy_buildings:
   if calibrate:
@@ -246,8 +242,8 @@ while True:
 
         current_delay = 0
         if add_delay and buy_delay < sys.maxsize:
-          if buy_delay > (delay_amount * delay_amount):
-            delay_amount = delay_amount * 10
+          if buy_delay >= (delay_amount ** 2):
+            delay_amount *=  10
           buy_delay += delay_amount
           if buy_delay > sys.maxsize:
             buy_delay = sys.maxsize
